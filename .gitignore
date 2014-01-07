@@ -1,0 +1,16 @@
+# Backup files
+*~
+\#*
+*.bak
+
+# Local R files
+*.Rcheck/
+.Rpackages
+.Rhistory
+.Rprofile
+.RData
+moreno_*.tar.gz
+
+# Other
+*.r
+.ackrc
