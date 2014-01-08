@@ -15,8 +15,7 @@ import.csv(file, upvote.sign = "+", downvote.sign = "-",
   downvote (defaults to \code{-})}
 
   \item{na.strings}{strings that will be converted to
-  \code{NA} (see respective entry for
-  \code{\link{read.csv}} for details)}
+  \code{NA} (defaults to \code{c('', 'NA')})}
 
   \item{id.column.index}{index of ID column (defaults to
   \code{1L})}

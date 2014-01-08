@@ -9,7 +9,7 @@
 .Rhistory
 .Rprofile
 .RData
-moreno_*.tar.gz
+moReno_*.tar.gz
 
 # Other
 *.r

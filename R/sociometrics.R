@@ -17,7 +17,7 @@
 moreno <- function(x, ...) {
     ## x can be either a matrix or a character string
     if (is.character(x) && length(x) == 1) {
-        d <- switch(ext <- tolower(file_ext(x)),
+        d <- switch(ext <- tolower(tools::file_ext(x)),
                     csv = import.csv(x, ...),
                     stop('invalid file format "' + ext + '"')
                     )
@@ -35,11 +35,11 @@ moreno <- function(x, ...) {
     nn <- n - 1                         #corrected sample size
 
     ## calculate group indexes
-    prefs.max <- (n * (n - 1)) / 2
+    prefs.max <- n * (n - 1) / 2
     mutual.pos <- mutual.neg <- logical(n)
     for (i in 1:n) {
-        mutual.pos[i] <- isTRUE(which(m[i, ]) %in% which(m[, i]))
-        mutual.neg[i] <- isTRUE(which(m[i, ] == FALSE) %in% which(m[, i] == FALSE))
+        mutual.pos[i] <- isTRUE(which(d[i, ]) %in% which(d[, i]))
+        mutual.neg[i] <- isTRUE(which(d[i, ] == FALSE) %in% which(d[, i] == FALSE))
     }
     cohesion <- (sum(mutual.pos) / 2) / prefs.max #cohesion index
     tension <- (sum(mutual.neg) / 2) / prefs.max  #tension index

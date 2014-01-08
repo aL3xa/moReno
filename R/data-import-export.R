@@ -52,11 +52,12 @@
 ##' @param file CSV file path
 ##' @param upvote.sign character string that represents upvote (defaults to \code{+})
 ##' @param downvote.sign character string that represents downvote (defaults to \code{-})
-##' @param na.strings strings that will be converted to \code{NA} (see respective entry for \code{\link{read.csv}} for details)
+##' @param na.strings strings that will be converted to \code{NA} (defaults to \code{c('', 'NA')})
 ##' @param id.column.index index of ID column (defaults to \code{1L})
 ##' @param ... additional params for \code{\link{read.csv}}
 import.csv <- function(file, upvote.sign = '+', downvote.sign = '-', na.strings = c('', 'NA'), id.column.index = 1L, ...) {
-    d <- read.csv("~/foo.csv", stringsAsFactors = FALSE, na.strings = na.strings, ...)
+    ## TODO: match.call() to avoid duplicate formal argument matching (na.strings) - set to c('', 'NA') if not provided
+    d <- read.csv(file, stringsAsFactors = FALSE, na.strings = na.strings, ...)
     if (has.column.index <- !is.null(id.column.index)) {
         ids <- d[, id.column.index]
         d <- d[, -id.column.index]
