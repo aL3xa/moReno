@@ -55,8 +55,7 @@
 ##' @param na.strings strings that will be converted to \code{NA} (see respective entry for \code{\link{read.csv}} for details)
 ##' @param id.column.index index of ID column (defaults to \code{1L})
 ##' @param ... additional params for \code{\link{read.csv}}
-##' @export
-moreno.import.csv <- function(file, upvote.sign = '+', downvote.sign = '-', na.strings = c('', 'NA'), id.column.index = 1L, ...) {
+import.csv <- function(file, upvote.sign = '+', downvote.sign = '-', na.strings = c('', 'NA'), id.column.index = 1L, ...) {
     d <- read.csv("~/foo.csv", stringsAsFactors = FALSE, na.strings = na.strings, ...)
     if (has.column.index <- !is.null(id.column.index)) {
         ids <- d[, id.column.index]

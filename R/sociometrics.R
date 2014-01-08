@@ -1,55 +1,24 @@
 ## sociometry.R
 
-##' Acceptance Index
+##' Sociometric Indexes
 ##'
-##' Number of positive votes corrected by sample length.
-##' @param x user record (logical vector) to calculate acceptance index from
-##' @export
-accept.index <- function(x) {
-    sum(x == TRUE, na.rm = TRUE) / (length(x) - 1)
-}
-
-##' Rejection Index
+##' Main package function that calculates sociometric indexes (both individual and group ones). For now it only supports data imports from CSV format (see \code{\link{import.csv}} for details).
 ##'
-##' Number of negative votes corrected by sample length.
-##' @param x user record (logical vector) to calculate rejection index from
-##' @export
-reject.index <- function(x) {
-    sum(x == FALSE, na.rm = TRUE) / (length(x) - 1)
-}
-
-##' Social Status Index
-##'
-##' Calculates social status index, i.e. difference between positive and negative votes count corrected by sample length.
-##' @param x user record (logical vector) to calculate social status index from
-##' @export
-status.index <- function(x) {
-    (sum(x == TRUE, na.rm = TRUE) - sum(x == FALSE, na.rm = TRUE)) / (length(x) - 1)
-}
-
-##' Individual Sociometric Indexes
-##'
-##' Calculates acceptance and rejection indexes, as well as social status index.
-##' @param d data to calculate indexes from
-individual.indexes <- function(d) {
-    res
-}
-
-group.indexes <- function(d, ...) {
-
-}
-
-##' Sociometrics
-##'
-##' .. content for \details{} ..
-##' @param x
-##' @param ...
+##' Upon successful calculation, a list with custom class (\code{moreno}) is returned with following items:
+##' \itemize{
+##'     \item \code{data} - holds logical square matrix with user votes
+##'     \item \code{counts} - numeric matrix with positive and negative vote counts
+##'     \item \code{individual} - numeric matrix with individual sociometric indexes, namely \emph{acception index} (\code{Ia}), \emph{rejection index} (\code{Ir}) and \emph{social status index} (\code{Iss})
+##'     \item \code{group} - list of 2 numeric values: \emph{group cohesion index} (\code{cohesion}) and \emph{group tension index} (\code{tension}). Each value has \code{indices} attribute with matrix indices where mutual acception/rejection has occured.
+##' }
+##' @param x either a file path to CSV file or a square logical matrix
+##' @param ... additional parameters for \code{\link{import.csv}}
 ##' @export
 moreno <- function(x, ...) {
     ## x can be either a matrix or a character string
     if (is.character(x) && length(x) == 1) {
         d <- switch(ext <- tolower(file_ext(x)),
-                    csv = moreno.import.csv(x),
+                    csv = import.csv(x, ...),
                     stop('invalid file format "' + ext + '"')
                     )
         ## or a logical square matrix

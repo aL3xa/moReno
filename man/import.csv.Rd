@@ -1,8 +1,8 @@
-\name{moreno.import.csv}
-\alias{moreno.import.csv}
+\name{import.csv}
+\alias{import.csv}
 \title{Import CSV with Sociometric Data}
 \usage{
-moreno.import.csv(file, upvote.sign = "+", downvote.sign = "-",
+import.csv(file, upvote.sign = "+", downvote.sign = "-",
   na.strings = c("", "NA"), id.column.index = 1L, ...)
 }
 \arguments{
