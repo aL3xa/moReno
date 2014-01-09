@@ -26,6 +26,5 @@ import.csv(file, upvote.sign = "+", downvote.sign = "-",
 Imports CSV file with votes from sociometric questionnaire
 and converts it to logical matrix where upvotes are
 recorded as \code{TRUE} and downvotes with \code{FALSE}.
-First
 }
 

@@ -28,8 +28,7 @@ matrix with individual sociometric indexes, namely
 (\code{Ir}) and \emph{social status index} (\code{Iss})
 \item \code{group} - list of 2 numeric values: \emph{group
 cohesion index} (\code{cohesion}) and \emph{group tension
-index} (\code{tension}). Each value has \code{indices}
-attribute with matrix indices where mutual
-acception/rejection has occured. }
+index} (\code{tension}) \item \code{mutual} - matrix with
+mutual choice pairs }
 }
 

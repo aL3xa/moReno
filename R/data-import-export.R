@@ -49,7 +49,7 @@
 
 ##' Import CSV with Sociometric Data
 ##'
-##' Imports CSV file with votes from sociometric questionnaire and converts it to logical matrix where upvotes are recorded as \code{TRUE} and downvotes with \code{FALSE}. First
+##' Imports CSV file with votes from sociometric questionnaire and converts it to logical matrix where upvotes are recorded as \code{TRUE} and downvotes with \code{FALSE}.
 ##' @param file CSV file path
 ##' @param upvote.sign character string that represents upvote (defaults to \code{+})
 ##' @param downvote.sign character string that represents downvote (defaults to \code{-})
@@ -76,4 +76,36 @@ import.csv <- function(file, upvote.sign = '+', downvote.sign = '-', na.strings 
     }
     colnames(m) <- 1:ncol(m)            #Q: is this really necessary?
     m
+}
+
+
+##' Export \code{moreno} Object to CSV File
+##'
+##' What title said.
+##' @param m \code{moreno}-class object to include
+##' @param file CSV file path
+##' @param upvote.sign string for upvotes (defaults to \code{+})
+##' @param downvote.sign string for downvotes (defaults to \code{-})
+##' @param na string for missing values (defaults to empty string)
+##' @param use.ids should user IDs be included (defaults to \code{TRUE})
+##' @param counts include vote counts (defaults to \code{TRUE})
+##' @param individual include individual sociometric indexes (defaults to \code{TRUE})
+##' @param ... additional parameters for \code{\link{write.csv}}
+##' @export
+export.csv <- function(m, file, upvote.sign = '+', downvote.sign = '-', na = '', use.ids = TRUE, counts = TRUE, individual = TRUE, ...) {
+    stopifnot(inherits(m, 'moreno'))
+    res <- m$data
+    res[is.na(res)] <- ''
+    res[res == 'TRUE'] <- upvote.sign
+    res[res == 'FALSE'] <- downvote.sign
+    if (!use.ids) {
+        rownames(res) <- 1:nrow(res)
+    }
+    if (counts) {
+        res <- rbind(res, t(m$counts))
+    }
+    if (individual) {
+        res <- rbind(res, t(m$individual))
+    }
+    write.csv(res, file, na = na, ...)
 }

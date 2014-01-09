@@ -1,5 +1,25 @@
 ## sociometry.R
 
+##' Mutual Choices
+##'
+##' Get pairs of mutual choices.
+##' @param d data matrix
+##' @param ind mutual indices
+get.mutual.pairs <- function(d, ind) {
+    m <- d[ind, ind]
+    nr <- nrow(m)
+    if (nr == 0) {
+        NULL
+    } else if (nr == 2) {
+        matrix(rownames(m), nrow = 1)
+    } else {
+        m1 <- which(m, arr.ind = TRUE)
+        m2 <- t(apply(m1, 1, sort))
+        m3 <- m2[order(m2[, 1]), ]
+        matrix(rownames(m3), nrow = nrow(m3) / 2, byrow = TRUE)
+    }
+}
+
 ##' Sociometric Indexes
 ##'
 ##' Main package function that calculates sociometric indexes (both individual and group ones). For now it only supports data imports from CSV format (see \code{\link{import.csv}} for details).
@@ -9,7 +29,8 @@
 ##'     \item \code{data} - holds logical square matrix with user votes
 ##'     \item \code{counts} - numeric matrix with positive and negative vote counts
 ##'     \item \code{individual} - numeric matrix with individual sociometric indexes, namely \emph{acception index} (\code{Ia}), \emph{rejection index} (\code{Ir}) and \emph{social status index} (\code{Iss})
-##'     \item \code{group} - list of 2 numeric values: \emph{group cohesion index} (\code{cohesion}) and \emph{group tension index} (\code{tension}). Each value has \code{indices} attribute with matrix indices where mutual acception/rejection has occured.
+##'     \item \code{group} - list of 2 numeric values: \emph{group cohesion index} (\code{cohesion}) and \emph{group tension index} (\code{tension})
+##'     \item \code{mutual} - matrix with mutual choice pairs
 ##' }
 ##' @param x either a file path to CSV file or a square logical matrix
 ##' @param ... additional parameters for \code{\link{import.csv}}
@@ -27,6 +48,8 @@ moreno <- function(x, ...) {
     } else {
         stop('invalid data format')
     }
+
+    ids <- row.names(d)                 #this should work after import
 
     ## check main diagonal
     if (!all(is.na(diag(d)))) {
@@ -48,29 +71,45 @@ moreno <- function(x, ...) {
     }
     cohesion <- (sum(mutual.pos) / 2) / prefs.max #cohesion index
     tension <- (sum(mutual.neg) / 2) / prefs.max  #tension index
-    attr(cohesion, 'indices') <- which(mutual.pos)
-    attr(tension, 'indices') <- which(mutual.neg)
+    ## add matrix indices for mutual preferences
+    mutual <- list()
+    if (any(mutual.pos)) {
+        mutual$positive <- get.mutual.pairs(d, mutual.pos)
+    } else {
+        mutual$positive <- NULL
+    }
+    if (any(mutual.neg)) {
+        mutual$negative <- get.mutual.pairs(d, mutual.neg)
+    } else {
+        mutual$negative <- NULL
+    }
 
     ## return final
     res <- list(
         ## vote matrix
         data = d,
         ## vote counts
-        counts = rbind(
-            '+' = pos,                  #positive votes count
-            '-' = neg                   #negative votes count
+        counts = structure(list(
+            `+` = pos,                  #positive votes count
+            `-` = neg                   #negative votes count
+            ),
+            .Names = c('+', '-'),
+            row.names = ids,
+            class = 'data.frame'
             ),
         ## individual indexes
-        individual = rbind(
+        individual = data.frame(
             Ia = pos / nn,              #acceptance index
             Ir = neg / nn,              #rejection index
-            Iss = (pos - neg) / nn      #social status index
+            Iss = (pos - neg) / nn,     #social status index
+            row.names = ids
             ),
         ## group indexes
         group = list(
             cohesion = cohesion,        #cohesion index
             tension = tension           #tension index
-            )
+            ),
+        mutual = mutual                 #mutual choices
         )
 
     class(res) <- 'moreno'
