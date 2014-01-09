@@ -28,6 +28,11 @@ moreno <- function(x, ...) {
         stop('invalid data format')
     }
 
+    ## check main diagonal
+    if (!all(is.na(diag(d)))) {
+        stop('data matrix main diagonal has non-missing values')
+    }
+
     ## votes (positive/negative)
     pos <- colSums(d, na.rm = TRUE)
     neg <- colSums(d == FALSE, na.rm = TRUE)

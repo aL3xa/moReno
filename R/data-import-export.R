@@ -1,6 +1,7 @@
 ## data-import-export.R
 
 ## create skeleton JSON, CSV
+## IDEA: create interactive mode for data insertion
 
 ## moreno.skeleton <- function(file, person.ids = NULL, person.names = NULL, criterias = NULL, person.name.placeholder = "person_", ...) {
 
