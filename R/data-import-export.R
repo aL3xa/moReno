@@ -66,6 +66,7 @@ import.csv <- function(file, upvote.sign = '+', downvote.sign = '-', na.strings 
     if (ncol(d) != nrow(d)) {
         stop('data matrix should be a square matrix')
     }
+    cn <- colnames(d)
     m <- as.matrix(d)
     m[m == upvote.sign] <- TRUE
     m[m == downvote.sign] <- FALSE
@@ -74,7 +75,7 @@ import.csv <- function(file, upvote.sign = '+', downvote.sign = '-', na.strings 
     if (has.column.index) {
         rownames(m) <- ids
     }
-    colnames(m) <- 1:ncol(m)            #Q: is this really necessary?
+    colnames(m) <- cn
     m
 }
 

@@ -49,6 +49,11 @@ moreno <- function(x, ...) {
         stop('invalid data format')
     }
 
+    ## check data validity: only one + and/or -, or none, per row
+    apply(d, 1, function(x){
+        length(which(x)) == 1 || length(which(!x)) == 1
+    })
+
     ids <- row.names(d)                 #this should work after import
 
     ## check main diagonal
@@ -65,24 +70,47 @@ moreno <- function(x, ...) {
     ## calculate group indexes
     prefs.max <- n * (n - 1) / 2
     mutual.pos <- mutual.neg <- logical(n)
+    u <- NULL
+    unreq <- numeric()
+
     for (i in 1:n) {
+        u <- xor(d[i, ], d[, i])
+        if (isTRUE(any(u))) {
+            unreq <- rbind(unreq, cbind(ids[i], ids[which(u)]))
+        }
         mutual.pos[i] <- isTRUE(which(d[i, ]) %in% which(d[, i]))
         mutual.neg[i] <- isTRUE(which(d[i, ] == FALSE) %in% which(d[, i] == FALSE))
     }
+    if (length(unreq)) {
+        unrequited <- unique(t(apply(unreq, 1, sort)))
+    } else {
+        unrequited <- NULL
+    }
     cohesion <- (sum(mutual.pos) / 2) / prefs.max #cohesion index
     tension <- (sum(mutual.neg) / 2) / prefs.max  #tension index
-    ## add matrix indices for mutual preferences
-    mutual <- list()
-    if (any(mutual.pos)) {
-        mutual$positive <- get.mutual.pairs(d, mutual.pos)
-    } else {
-        mutual$positive <- NULL
-    }
-    if (any(mutual.neg)) {
-        mutual$negative <- get.mutual.pairs(d, mutual.neg)
-    } else {
-        mutual$negative <- NULL
-    }
+    max.ct <- n / prefs.max                       #maximum cohesion/tension
+
+    ## sociometric categories
+    categories <- list(
+        ## loners - ?
+        loners = NULL,
+        ## unchosen - 0 votes
+        unchosen = ids[pos == 0 & neg == 0],
+        ## rejected - only negative votes
+        rejected = ids[pos == 0 & neg > 0],
+        ## abstinents - ?
+        abstinents = NULL,
+        ## popular - 5+ positive votes, no negative votes
+        popular = ids[pos >= 5 & neg == 0],
+        ## unpopular - 4+ negative votes, no positive votes
+        unpopular = ids[neg >= 4 & pos == 0],
+        ## mutual attraction - mutual positive votes
+        mutual.positive = get.mutual.pairs(d, mutual.pos),
+        ## mutual rejection - mutual negative votes
+        mutual.negative = get.mutual.pairs(d, mutual.neg),
+        ## unrequited - positive <-> negative vote
+        unrequited = unrequited
+        )
 
     ## return final
     res <- list(
@@ -106,10 +134,18 @@ moreno <- function(x, ...) {
             ),
         ## group indexes
         group = list(
-            cohesion = cohesion,        #cohesion index
-            tension = tension           #tension index
+            cohesion = c(
+                index = cohesion,       #cohesion index
+                max = max.ct,           #maximum cohesion
+                relative = cohesion / max.ct #relative cohesion index (0-1)
+                ),
+            tension = c(
+                index = tension,        #tension index
+                max = max.ct,           #maximum cohesion
+                relative = tension / max.ct #relative tension index (0-1)
+                )
             ),
-        mutual = mutual                 #mutual choices
+        categories = categories
         )
 
     class(res) <- 'moreno'
