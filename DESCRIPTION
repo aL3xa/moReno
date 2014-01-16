@@ -1,15 +1,14 @@
 Package: moReno
 Type: Package
 Encoding: UTF-8
-Title: Tools for sociometry technique
+Title: Tools for Jacob Moreno's sociometry technique
 Version: 0.1
 Date: 2014-01-07
 Author: Aleksandar Blagotić <aca.blagotic@gmail.com>
 Maintainer: Aleksandar Blagotić <aca.blagotic@gmail.com>
 Description: Provides helpers for calculating sociometric indexes (both group
-    and individual) and sociogram plot. Allows data import from CSV and JSON.
+    and individual) and sociogram plot. Allows data import from CSV.
 License: GPL-3
 Imports:
-    tools,
     igraph,
     rjson

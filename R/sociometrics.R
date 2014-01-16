@@ -49,8 +49,7 @@ get.mutual.pairs <- function(d, ind) {
 moreno <- function(x, ...) {
     ## x can be either a matrix or a character string
     if (is.character(x) && length(x) == 1) {
-        ## TODO: replace with regexp to ditch dependency
-        d <- switch(ext <- tolower(tools::file_ext(x)),
+        d <- switch(ext <- tolower(gsub('^.*\\.(.+)$', '\\1', x)),
                     csv = import.csv(x, ...),
                     stop('invalid file format "' + ext + '"')
                     )
