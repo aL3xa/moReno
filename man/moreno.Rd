@@ -28,7 +28,22 @@ matrix with individual sociometric indexes, namely
 (\code{Ir}) and \emph{social status index} (\code{Iss})
 \item \code{group} - list of 2 numeric values: \emph{group
 cohesion index} (\code{cohesion}) and \emph{group tension
-index} (\code{tension}) \item \code{mutual} - matrix with
-mutual choice pairs }
+index} (\code{tension}) \item \code{categories} - list of
+9, each element containing data, either a character vector
+with user ids, or a matrix with id pairs of users that fall
+into specific sociometric category. Following sociometric
+categories are available: \enumerate{ \item \code{loners} -
+users who have no votes, nor give votes to others \item
+\code{unchosen} - have no votes, but give votes to others
+\item \code{rejected} - have only negative votes \item
+\code{abstinents} - refuse to give vote to others, but do
+get voted \item \code{popular} - have 5 or more positive
+votes, and no negative votes \item \code{unpopular} - have
+4 or more negative votes, but no positive votes \item
+\code{mutual.positive} - pairs of users who give positive
+votes mutually \item \code{mutual.negative} - pairs of
+users who give negative votes mutually \item
+\code{unrequited} - pairs of users who give negative votes
+mutually } }
 }
 

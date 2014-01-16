@@ -3,7 +3,7 @@
 ## create skeleton JSON, CSV
 ## IDEA: create interactive mode for data insertion
 
-## moreno.skeleton <- function(file, person.ids = NULL, person.names = NULL, criterias = NULL, person.name.placeholder = "person_", ...) {
+## moreno.json.skeleton <- function(file, person.ids = NULL, person.names = NULL, criterias = NULL, person.name.placeholder = "person_", ...) {
 
 ##     null.person.ids <- is.null(person.ids)
 ##     null.person.names <- is.null(person.names)

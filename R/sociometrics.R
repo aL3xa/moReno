@@ -30,7 +30,18 @@ get.mutual.pairs <- function(d, ind) {
 ##'     \item \code{counts} - numeric matrix with positive and negative vote counts
 ##'     \item \code{individual} - numeric matrix with individual sociometric indexes, namely \emph{acception index} (\code{Ia}), \emph{rejection index} (\code{Ir}) and \emph{social status index} (\code{Iss})
 ##'     \item \code{group} - list of 2 numeric values: \emph{group cohesion index} (\code{cohesion}) and \emph{group tension index} (\code{tension})
-##'     \item \code{mutual} - matrix with mutual choice pairs
+##'     \item \code{categories} - list of 9, each element containing data, either a character vector with user ids, or a matrix with id pairs of users that fall into specific sociometric category. Following sociometric categories are available:
+##'     \enumerate{
+##'         \item \code{loners} - users who have no votes, nor give votes to others
+##'         \item \code{unchosen} - have no votes, but give votes to others
+##'         \item \code{rejected} - have only negative votes
+##'         \item \code{abstinents} - refuse to give vote to others, but do get voted
+##'         \item \code{popular} - have 5 or more positive votes, and no negative votes
+##'         \item \code{unpopular} - have 4 or more negative votes, but no positive votes
+##'         \item \code{mutual.positive} - pairs of users who give positive votes mutually
+##'         \item \code{mutual.negative} - pairs of users who give negative votes mutually
+##'         \item \code{unrequited} - pairs of users who give negative votes mutually
+##'     }
 ##' }
 ##' @param x either a file path to CSV file or a square logical matrix
 ##' @param ... additional parameters for \code{\link{import.csv}}
@@ -38,6 +49,7 @@ get.mutual.pairs <- function(d, ind) {
 moreno <- function(x, ...) {
     ## x can be either a matrix or a character string
     if (is.character(x) && length(x) == 1) {
+        ## TODO: replace with regexp to ditch dependency
         d <- switch(ext <- tolower(tools::file_ext(x)),
                     csv = import.csv(x, ...),
                     stop('invalid file format "' + ext + '"')
@@ -49,21 +61,25 @@ moreno <- function(x, ...) {
         stop('invalid data format')
     }
 
-    ## check data validity: only one + and/or -, or none, per row
-    apply(d, 1, function(x){
-        length(which(x)) == 1 || length(which(!x)) == 1
-    })
-
-    ids <- row.names(d)                 #this should work after import
-
     ## check main diagonal
     if (!all(is.na(diag(d)))) {
         stop('data matrix main diagonal has non-missing values')
     }
 
+    ## check data validity: only one + and/or -, or none, per row
+    ok <- apply(d, 1, function(x) {
+        isTRUE(length(which(x)) == 1 && length(which(!x)) == 1 || all(is.na(x)))
+    })
+    if (!all(ok)) {
+        stop('found invalid rows: ', paste0(names(which(!ok)), collapse = ", "))
+    }
+
+    ids <- row.names(d)                 #this should work after import
+
     ## votes (positive/negative)
     pos <- colSums(d, na.rm = TRUE)
     neg <- colSums(d == FALSE, na.rm = TRUE)
+    nas <- apply(d, 1, function(x) all(is.na(x)))
     n <- nrow(d)
     nn <- n - 1                         #corrected sample size
 
@@ -92,18 +108,18 @@ moreno <- function(x, ...) {
 
     ## sociometric categories
     categories <- list(
-        ## loners - ?
-        loners = NULL,
+        ## loners - 0 votes and NAs for the others
+        loners = length.or.null(ids[pos == 0 & neg == 0 & nas]),
         ## unchosen - 0 votes
-        unchosen = ids[pos == 0 & neg == 0],
+        unchosen = length.or.null(ids[pos == 0 & neg == 0]),
         ## rejected - only negative votes
-        rejected = ids[pos == 0 & neg > 0],
-        ## abstinents - ?
-        abstinents = NULL,
+        rejected = length.or.null(ids[pos == 0 & neg > 0]),
+        ## abstinents - 1+ votes and NAs for others
+        abstinents = length.or.null(ids[(pos > 0 | neg > 0) & nas]),
         ## popular - 5+ positive votes, no negative votes
-        popular = ids[pos >= 5 & neg == 0],
+        popular = length.or.null(ids[pos >= 5 & neg == 0]),
         ## unpopular - 4+ negative votes, no positive votes
-        unpopular = ids[neg >= 4 & pos == 0],
+        unpopular = length.or.null(ids[neg >= 4 & pos == 0]),
         ## mutual attraction - mutual positive votes
         mutual.positive = get.mutual.pairs(d, mutual.pos),
         ## mutual rejection - mutual negative votes
