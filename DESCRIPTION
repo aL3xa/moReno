@@ -10,5 +10,4 @@ Description: Provides helpers for calculating sociometric indexes (both group
     and individual) and sociogram plot. Allows data import from CSV.
 License: GPL-3
 Imports:
-    igraph,
-    rjson
+    igraph
