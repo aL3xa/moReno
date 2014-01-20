@@ -1,21 +1,24 @@
 \name{sociogram}
 \alias{sociogram}
-\title{.. content for \description{} (no empty lines) ..}
+\title{Sociogram}
 \usage{
-sociogram(data, person.column, choice.columns, group.column, ...)
+sociogram(m, group = NULL, group.colors = NULL, arrow.colors = NULL)
 }
 \arguments{
-  \item{data}{}
+  \item{m}{a \code{moreno}-classed object}
 
-  \item{person.column}{}
+  \item{group}{additional vector for group affiliation
+  (defaults to \code{NULL})}
 
-  \item{choice.columns}{}
+  \item{group.colors}{character vector for group colors
+  (defaults to \code{NULL})}
 
-  \item{group.column}{}
-
-  \item{...}{}
+  \item{arrow.colors}{character vector for arrow colors
+  (defaults to \code{NULL})}
 }
 \description{
-.. content for \details{} ..
+Plots sociogram for given \code{moreno}-classed object.
+Uses \code{igraph} library and \emph{Fruchterman-Reingold}
+layout to
 }
 
