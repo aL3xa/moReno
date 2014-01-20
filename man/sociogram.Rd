@@ -19,6 +19,6 @@ sociogram(m, group = NULL, group.colors = NULL, arrow.colors = NULL)
 \description{
 Plots sociogram for given \code{moreno}-classed object.
 Uses \code{igraph} library and \emph{Fruchterman-Reingold}
-layout to
+layout to plot sociogram.
 }
 

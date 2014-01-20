@@ -2,7 +2,7 @@
 
 ##' Sociogram
 ##'
-##' Plots sociogram for given \code{moreno}-classed object. Uses \code{igraph} library and \emph{Fruchterman-Reingold} layout to
+##' Plots sociogram for given \code{moreno}-classed object. Uses \code{igraph} library and \emph{Fruchterman-Reingold} layout to plot sociogram.
 ##' @param m a \code{moreno}-classed object
 ##' @param group additional vector for group affiliation (defaults to \code{NULL})
 ##' @param group.colors character vector for group colors (defaults to \code{NULL})
